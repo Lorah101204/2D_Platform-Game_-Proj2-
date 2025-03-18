@@ -1,17 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PlayerMovement : MonoBehaviour
 {
-     private float horizontal;
+    float horizontal;
     private float speed = 4f;
-    private float jumpingPower = 4f;
+    private float jumpingPower = 5f; 
     private bool isFacingRight = true;
-
+    
+    [SerializeField] private Animator playerAnim;
     [SerializeField] private Rigidbody2D playerRigidbody;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundLayer;
+
+    void Awake()
+    {
+        playerAnim = GetComponent<Animator>();
+        playerRigidbody = GetComponent<Rigidbody2D>();
+    }
+
 
     void Update()
     {
@@ -23,7 +32,9 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetButtonUp("Jump") && playerRigidbody.velocity.y > 0f) {
             playerRigidbody.velocity = new Vector2(playerRigidbody.velocity.x, playerRigidbody.velocity.y * 0.5f);
         }
+        playerAnim.SetFloat("Speed", Mathf.Abs(horizontal));
         Flip();
+        playerAnim.SetBool("isJumping", !IsGrounded());
     }
 
     private void FixedUpdate() {
