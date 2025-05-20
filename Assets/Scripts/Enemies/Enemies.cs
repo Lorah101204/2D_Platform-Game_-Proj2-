@@ -82,7 +82,7 @@ public class Enemies : MonoBehaviour
             Flip();
             hasFlipped = true;
         }
-        else if (touchCheck.IsOnWall || !touchCheck.IsGrounded)
+        else if (!touchCheck.IsOnWall || !touchCheck.IsGrounded)
         {
             hasFlipped = false;
         }

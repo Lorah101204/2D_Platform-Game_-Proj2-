@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -47,10 +48,10 @@ public class Damageable : MonoBehaviour
         }
     }
 
-    public bool LockVelocity 
+    public bool LockVelocity
     {
         get { return animator.GetBool(AnimationStrings.lockVelocity); }
-        set 
+        set
         {
             animator.SetBool(AnimationStrings.lockVelocity, value);
         }
@@ -70,7 +71,7 @@ public class Damageable : MonoBehaviour
                 isInvincible = false;
                 timeSinceHit = 0f;
             }
-            timeSinceHit += Time.deltaTime;    
+            timeSinceHit += Time.deltaTime;
         }
     }
 
@@ -85,10 +86,22 @@ public class Damageable : MonoBehaviour
             LockVelocity = true;
             animator.SetTrigger(AnimationStrings.hit);
             damageableHit?.Invoke(damage, knockback);
+            CharacterEvent.onCharacterTookenDamage?.Invoke(gameObject, damage);
 
             return true;
         }
 
         return false;
+    }
+    
+    public void Heal(int heal)
+    {
+        if (IsAlive)
+        {
+            int maxHeal = Mathf.Max(MaxHealth - Health, 0);
+            int actualHeal = Mathf.Min(maxHeal, heal);
+            Health += actualHeal;
+            CharacterEvent.onCharacterHealed(gameObject, actualHeal);
+        }
     }
 }
